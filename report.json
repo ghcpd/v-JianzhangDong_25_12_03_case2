@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "total_vulnerabilities": 7,
+    "critical": 3,
+    "high": 3,
+    "medium": 1,
+    "low": 0
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "inputs.py",
+      "line_numbers": [11, 12, 13],
+      "vulnerability_type": "Hardcoded Secrets",
+      "severity": "Critical",
+      "description": "Sensitive credentials (PAYMENT_TOKEN, MAIL_SERVER_KEY, INTERNAL_AUTH) are hardcoded directly in the source code. This exposes secrets to anyone with access to the codebase and makes credential rotation difficult.",
+      "fix_explanation": "Replaced hardcoded secrets with environment variables using os.environ.get(). This follows the 12-factor app methodology and allows secure secret management through environment configuration. Secrets should be stored in secure vaults or environment configuration files that are not committed to version control.",
+      "secure_code_snippet": "PAYMENT_TOKEN = os.environ.get(\"PAYMENT_TOKEN\", \"\")\nMAIL_SERVER_KEY = os.environ.get(\"MAIL_SERVER_KEY\", \"\")\nINTERNAL_AUTH = os.environ.get(\"INTERNAL_AUTH\", \"\")"
+    },
+    {
+      "id": 2,
+      "file": "inputs.py",
+      "line_numbers": [27],
+      "vulnerability_type": "SQL Injection",
+      "severity": "Critical",
+      "description": "User input (uid) is directly concatenated into SQL query using string formatting. This allows attackers to inject arbitrary SQL commands, potentially leading to unauthorized data access, modification, or deletion.",
+      "fix_explanation": "Implemented parameterized queries using SQLite's parameter substitution (? placeholder). Added input validation using regex to ensure uid only contains alphanumeric characters, hyphens, and underscores. Parameterized queries ensure user input is treated as data, not executable SQL code.",
+      "secure_code_snippet": "if not uid or not re.match(r'^[a-zA-Z0-9_-]+$', uid):\n    return []\nq = \"SELECT id, name, balance FROM profiles WHERE id = ?\"\nc.execute(q, (uid,))"
+    },
+    {
+      "id": 3,
+      "file": "inputs.py",
+      "line_numbers": [52],
+      "vulnerability_type": "Command Injection",
+      "severity": "Critical",
+      "description": "User-controlled input (name) is directly interpolated into a shell command with shell=True. This allows attackers to execute arbitrary system commands by injecting shell metacharacters.",
+      "fix_explanation": "Replaced shell=True with shell=False and used list-based command arguments. Added strict input validation using regex to allow only alphanumeric characters, hyphens, and underscores. This prevents command injection by avoiding shell interpretation of special characters. Added exception handling to gracefully handle failures.",
+      "secure_code_snippet": "if not name or not re.match(r'^[a-zA-Z0-9_-]+$', name):\n    return False\ntry:\n    subprocess.Popen([\"zip\", f\"{name}.zip\", DB_FILE], shell=False)\n    return True\nexcept Exception as e:\n    print(f\"Export failed: {str(e)}\")\n    return False"
+    },
+    {
+      "id": 4,
+      "file": "inputs.py",
+      "line_numbers": [19],
+      "vulnerability_type": "Weak Cryptographic Algorithm",
+      "severity": "High",
+      "description": "MD5 hashing algorithm is used for authentication tokens. MD5 is cryptographically broken and vulnerable to collision attacks, making it unsuitable for security-sensitive operations.",
+      "fix_explanation": "Replaced MD5 with SHA-256, a cryptographically secure hash function. SHA-256 is part of the SHA-2 family and provides strong collision resistance. Added validation to ensure username exists before processing. For production systems, consider using purpose-built functions like bcrypt or Argon2 for password hashing with salts.",
+      "secure_code_snippet": "username = info.get(\"username\", \"\")\nif not username:\n    return None\nraw = username + INTERNAL_AUTH\nhashed = hashlib.sha256(raw.encode()).hexdigest()\nreturn hashed"
+    },
+    {
+      "id": 5,
+      "file": "inputs.py",
+      "line_numbers": [38],
+      "vulnerability_type": "Server-Side Request Forgery (SSRF)",
+      "severity": "High",
+      "description": "User-supplied URL is directly used in requests.post() without validation. Attackers can force the server to make requests to internal services, cloud metadata endpoints, or arbitrary external URLs, potentially exposing internal resources.",
+      "fix_explanation": "Implemented URL validation using urlparse to check the hostname against a whitelist of allowed domains. The whitelist is configurable via environment variables. Added timeout to prevent hanging requests. Added exception handling and amount validation to ensure only positive numeric amounts are processed. This prevents SSRF attacks by restricting which hosts the server can communicate with.",
+      "secure_code_snippet": "try:\n    amount = float(amount)\n    if amount <= 0:\n        return \"Invalid amount\"\nexcept (ValueError, TypeError):\n    return \"Invalid amount\"\n\nparsed = urlparse(url)\nif parsed.hostname not in ALLOWED_DOMAINS:\n    return \"URL not in allowed domains\"\n\nresp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount}, timeout=5)"
+    },
+    {
+      "id": 6,
+      "file": "inputs.py",
+      "line_numbers": [44, 45],
+      "vulnerability_type": "Arbitrary File Read / Path Traversal",
+      "severity": "High",
+      "description": "User-supplied file path is directly used to open and read files without validation. Attackers can use path traversal sequences (../) to read arbitrary files on the server, including sensitive system files and configuration files.",
+      "fix_explanation": "Implemented path validation by restricting file access to a configurable base directory (ALLOWED_CONFIG_DIR). Used os.path.abspath() and os.path.basename() to normalize paths and prevent directory traversal. Added checks to ensure the resolved path stays within the allowed directory and that the file exists. Added comprehensive error handling. This prevents path traversal attacks while maintaining legitimate functionality.",
+      "secure_code_snippet": "base_dir = os.path.abspath(ALLOWED_CONFIG_DIR)\nrequested_path = os.path.abspath(os.path.join(base_dir, os.path.basename(path)))\n\nif not requested_path.startswith(base_dir):\n    return {\"error\": \"Path traversal attempt detected\"}\n\nif not os.path.isfile(requested_path):\n    return {\"error\": \"File not found\"}\n\ntry:\n    with open(requested_path) as f:\n        cfg = yaml.safe_load(f)\n    return cfg\nexcept Exception as e:\n    return {\"error\": f\"Failed to load config: {str(e)}\"}"
+    },
+    {
+      "id": 7,
+      "file": "inputs.py",
+      "line_numbers": [87],
+      "vulnerability_type": "Debug Mode Enabled in Production",
+      "severity": "Medium",
+      "description": "Flask application runs with debug=True, which exposes sensitive debugging information, interactive debugger, and detailed error messages to end users. This provides attackers with valuable information about the application structure and potential vulnerabilities.",
+      "fix_explanation": "Made debug mode configurable via FLASK_DEBUG environment variable with default value of False. This ensures debug mode is disabled by default and can only be enabled explicitly for development environments. The debug mode should never be enabled in production deployments.",
+      "secure_code_snippet": "debug_mode = os.environ.get(\"FLASK_DEBUG\", \"False\").lower() == \"true\"\napp.run(debug=debug_mode)"
+    }
+  ]
+}
