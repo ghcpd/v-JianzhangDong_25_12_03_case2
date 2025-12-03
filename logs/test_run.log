@@ -1,0 +1,177 @@
+[2025-12-03T08:12:44.921437] Starting tests for input_backup.py using run_test.bat
+[2025-12-03T08:12:46.141596] stdout for input_backup.py:
+transfer:T:10
+Test results for input_backup:
+  sql_injection: FAIL
+  command_injection: PASS
+  path_traversal: FAIL
+  ssrf: FAIL
+OVERALL: FAIL
+
+[2025-12-03T08:12:46.142551] stderr for input_backup.py:
+'zip' 不是内部或外部命令，也不是可运行的程序
+或批处理文件。
+Traceback (most recent call last):
+  File "D:\python\Lib\shutil.py", line 707, in _rmtree_unsafe
+    os.rmdir(path)
+    ~~~~~~~~^^^^^^
+PermissionError: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'C:\\Users\\V-JIAN~1\\AppData\\Local\\Temp\\tmp1ixogliz'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\python\Lib\tempfile.py", line 930, in onexc
+    _os.unlink(path)
+    ~~~~~~~~~~^^^^^^
+PermissionError: [WinError 5] 拒绝访问。: 'C:\\Users\\V-JIAN~1\\AppData\\Local\\Temp\\tmp1ixogliz'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 139, in <module>
+    main()
+    ~~~~^^
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 134, in main
+    success = run_tests(args.module)
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 106, in run_tests
+    with tempfile.TemporaryDirectory() as td:
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\python\Lib\tempfile.py", line 971, in __exit__
+    self.cleanup()
+    ~~~~~~~~~~~~^^
+  File "D:\python\Lib\tempfile.py", line 975, in cleanup
+    self._rmtree(self.name, ignore_errors=self._ignore_cleanup_errors)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\tempfile.py", line 955, in _rmtree
+    _shutil.rmtree(name, onexc=onexc)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 852, in rmtree
+    _rmtree_impl(path, dir_fd, onexc)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 711, in _rmtree_unsafe
+    onexc(os.rmdir, path, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\tempfile.py", line 945, in onexc
+    cls._rmtree(path, ignore_errors=ignore_errors,
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                repeated=(path == name))
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\tempfile.py", line 955, in _rmtree
+    _shutil.rmtree(name, onexc=onexc)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 852, in rmtree
+    _rmtree_impl(path, dir_fd, onexc)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 711, in _rmtree_unsafe
+    onexc(os.rmdir, path, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 707, in _rmtree_unsafe
+    os.rmdir(path)
+    ~~~~~~~~^^^^^^
+PermissionError: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'C:\\Users\\V-JIAN~1\\AppData\\Local\\Temp\\tmp1ixogliz'
+
+[2025-12-03T08:12:46.143459] Status for input_backup.py: FAIL (exit=1)
+[2025-12-03T08:12:46.143752] Starting tests for inputs.py using run_test.bat
+[2025-12-03T08:12:47.068202] stdout for inputs.py:
+transfer:T:10
+Test results for inputs:
+  sql_injection: PASS
+  command_injection: PASS
+  path_traversal: PASS
+  ssrf: PASS
+OVERALL: PASS
+
+[2025-12-03T08:12:47.068587] stderr for inputs.py:
+Traceback (most recent call last):
+  File "D:\python\Lib\shutil.py", line 701, in _rmtree_unsafe
+    os.unlink(fullname)
+    ~~~~~~~~~^^^^^^^^^^
+PermissionError: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'C:\\Users\\V-JIAN~1\\AppData\\Local\\Temp\\tmpo5bkwast\\appdata.db'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 139, in <module>
+    main()
+    ~~~~^^
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 134, in main
+    success = run_tests(args.module)
+  File "D:\projects\v-JianzhangDong_25_12_03_case2\oswe-large-rapd-m4s90\v-JianzhangDong_25_12_03_case2\tests_runner.py", line 106, in run_tests
+    with tempfile.TemporaryDirectory() as td:
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\python\Lib\tempfile.py", line 971, in __exit__
+    self.cleanup()
+    ~~~~~~~~~~~~^^
+  File "D:\python\Lib\tempfile.py", line 975, in cleanup
+    self._rmtree(self.name, ignore_errors=self._ignore_cleanup_errors)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\tempfile.py", line 955, in _rmtree
+    _shutil.rmtree(name, onexc=onexc)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 852, in rmtree
+    _rmtree_impl(path, dir_fd, onexc)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\shutil.py", line 705, in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python\Lib\tempfile.py", line 930, in onexc
+    _os.unlink(path)
+    ~~~~~~~~~~^^^^^^
+PermissionError: [WinError 32] 另一个程序正在使用此文件，进程无法访问。: 'C:\\Users\\V-JIAN~1\\AppData\\Local\\Temp\\tmpo5bkwast\\appdata.db'
+
+[2025-12-03T08:12:47.068973] Status for inputs.py: FAIL (exit=1)
+[2025-12-03T08:12:47.069314] TEST FAILED
+[2025-12-03T08:13:38.526836+00:00] Starting tests for input_backup.py using run_test.bat
+[2025-12-03T08:13:39.758584+00:00] stdout for input_backup.py:
+transfer:T:10
+Test results for input_backup:
+  sql_injection: FAIL
+  command_injection: PASS
+  path_traversal: FAIL
+  ssrf: FAIL
+OVERALL: FAIL
+
+[2025-12-03T08:13:39.759848+00:00] stderr for input_backup.py:
+'zip' 不是内部或外部命令，也不是可运行的程序
+或批处理文件。
+
+[2025-12-03T08:13:39.761182+00:00] Status for input_backup.py: EXPECTED_FAIL (exit=1)
+[2025-12-03T08:13:39.762062+00:00] Starting tests for inputs.py using run_test.bat
+[2025-12-03T08:13:41.851772+00:00] stdout for inputs.py:
+transfer:T:10
+Test results for inputs:
+  sql_injection: PASS
+  command_injection: PASS
+  path_traversal: PASS
+  ssrf: PASS
+OVERALL: PASS
+
+[2025-12-03T08:13:41.852505+00:00] Status for inputs.py: PASS (exit=0)
+[2025-12-03T08:13:41.853484+00:00] TEST PASSED
+[2025-12-03T08:14:03.130632+00:00] Starting tests for input_backup.py using run_test.bat
+[2025-12-03T08:14:04.075598+00:00] stdout for input_backup.py:
+transfer:T:10
+Test results for input_backup:
+  sql_injection: FAIL
+  command_injection: PASS
+  path_traversal: FAIL
+  ssrf: FAIL
+OVERALL: FAIL
+
+[2025-12-03T08:14:04.076125+00:00] stderr for input_backup.py:
+'zip' 不是内部或外部命令，也不是可运行的程序
+或批处理文件。
+
+[2025-12-03T08:14:04.076732+00:00] Status for input_backup.py: EXPECTED_FAIL (exit=1)
+[2025-12-03T08:14:04.077162+00:00] Starting tests for inputs.py using run_test.bat
+[2025-12-03T08:14:05.044063+00:00] stdout for inputs.py:
+transfer:T:10
+Test results for inputs:
+  sql_injection: PASS
+  command_injection: PASS
+  path_traversal: PASS
+  ssrf: PASS
+OVERALL: PASS
+
+[2025-12-03T08:14:05.044797+00:00] Status for inputs.py: PASS (exit=0)
+[2025-12-03T08:14:05.045166+00:00] TEST PASSED

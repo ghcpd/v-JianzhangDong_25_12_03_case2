@@ -1,0 +1,91 @@
+{
+  "summary": {
+    "total_vulnerabilities": 8,
+    "critical": 2,
+    "high": 3,
+    "medium": 2,
+    "low": 1
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "inputs.py",
+      "line_numbers": [11, 12, 13],
+      "vulnerability_type": "Hardcoded Secrets",
+      "severity": "High",
+      "description": "Sensitive tokens/keys are hardcoded, enabling credential leakage and misuse.",
+      "fix_explanation": "Load secrets from environment variables with safe defaults for development.",
+      "secure_code_snippet": "PAYMENT_TOKEN = os.getenv(\"PAYMENT_TOKEN\", \"dev_payment_token\")\nMAIL_SERVER_KEY = os.getenv(\"MAIL_SERVER_KEY\", \"dev_mail_key\")\nINTERNAL_AUTH = os.getenv(\"INTERNAL_AUTH\", \"dev_internal_secret\")"
+    },
+    {
+      "id": 2,
+      "file": "inputs.py",
+      "line_numbers": [20],
+      "vulnerability_type": "Weak Cryptography (MD5)",
+      "severity": "Medium",
+      "description": "MD5 hashing of auth tokens is insecure and susceptible to collision/brute force.",
+      "fix_explanation": "Use HMAC-SHA256 with a secret key for deterministic tokens.",
+      "secure_code_snippet": "token = hmac.new(INTERNAL_AUTH.encode(), msg=username.encode(), digestmod=hashlib.sha256).hexdigest()"
+    },
+    {
+      "id": 3,
+      "file": "inputs.py",
+      "line_numbers": [27],
+      "vulnerability_type": "SQL Injection",
+      "severity": "High",
+      "description": "User input is interpolated directly into SQL queries allowing injection.",
+      "fix_explanation": "Use parameterized queries with placeholders to bind user input.",
+      "secure_code_snippet": "c.execute(\"SELECT id,name,balance FROM profiles WHERE id = ?\", (uid,))"
+    },
+    {
+      "id": 4,
+      "file": "inputs.py",
+      "line_numbers": [39, 40],
+      "vulnerability_type": "Server-Side Request Forgery (SSRF)",
+      "severity": "Critical",
+      "description": "`notify_url` is user-controlled and used directly in outbound requests, allowing access to internal resources.",
+      "fix_explanation": "Validate URLs: enforce http/https, disallow private/loopback addresses, and optionally allowlist hosts before requests.",
+      "secure_code_snippet": "if not _is_safe_notify_url(url):\n    raise ValueError(\"Unsafe notify_url\")"
+    },
+    {
+      "id": 5,
+      "file": "inputs.py",
+      "line_numbers": [44, 45],
+      "vulnerability_type": "Path Traversal / Arbitrary File Read",
+      "severity": "High",
+      "description": "Arbitrary filesystem paths from users are opened without validation, enabling sensitive file reads.",
+      "fix_explanation": "Restrict to a configured `CONFIG_DIR`, validate extensions, resolve absolute paths, and refuse traversal outside base.",
+      "secure_code_snippet": "base = Path(CONFIG_DIR).resolve()\ntarget = Path(path).expanduser().resolve()\nif not str(target).startswith(str(base)): raise ValueError\nif target.suffix not in ('.yml', '.yaml'): raise ValueError"
+    },
+    {
+      "id": 6,
+      "file": "inputs.py",
+      "line_numbers": [50, 51, 52],
+      "vulnerability_type": "Command Injection",
+      "severity": "Critical",
+      "description": "User-controlled `name` is concatenated into a shell command with `shell=True`, allowing arbitrary command execution.",
+      "fix_explanation": "Avoid shells; validate names and use Python's `zipfile` to create archives safely.",
+      "secure_code_snippet": "if not SAFE_NAME_PATTERN.match(name): raise ValueError\nwith ZipFile(zip_path, 'w') as zf: zf.write(db_path, arcname=db_path.name)"
+    },
+    {
+      "id": 7,
+      "file": "inputs.py",
+      "line_numbers": [88],
+      "vulnerability_type": "Debug Mode Enabled",
+      "severity": "Medium",
+      "description": "Flask debug mode is enabled by default, exposing interactive consoles and internal state.",
+      "fix_explanation": "Disable debug by default and gate it with an environment variable.",
+      "secure_code_snippet": "debug_flag = os.getenv('FLASK_DEBUG', '0') == '1'\napp.run(debug=debug_flag)"
+    },
+    {
+      "id": 8,
+      "file": "inputs.py",
+      "line_numbers": [38],
+      "vulnerability_type": "Information Exposure via Logs",
+      "severity": "Low",
+      "description": "Sensitive transfer details are printed to stdout without sanitization.",
+      "fix_explanation": "Limit logging of sensitive fields or use structured logging with redaction.",
+      "secure_code_snippet": "log = f'transfer:{target}:{amount}'  # consider redaction or structured logging"
+    }
+  ]
+}
