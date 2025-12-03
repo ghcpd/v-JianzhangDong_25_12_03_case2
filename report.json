@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "total_vulnerabilities": 7,
+    "critical": 3,
+    "high": 3,
+    "medium": 1,
+    "low": 0
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "inputs.py",
+      "line_numbers": [11,12,13],
+      "vulnerability_type": "Hardcoded secrets",
+      "severity": "Critical",
+      "description": "API tokens and internal secrets are hardcoded in source control (PAYMENT_TOKEN, MAIL_SERVER_KEY, INTERNAL_AUTH).",
+      "fix_explanation": "Move all secrets to environment variables and fail or warn if missing. This prevents secrets from landing in version control and allows secure injection at deployment time.",
+      "secure_code_snippet": "PAYMENT_TOKEN = os.getenv(\"PAYMENT_TOKEN\", \"\")\nMAIL_SERVER_KEY = os.getenv(\"MAIL_SERVER_KEY\", \"\")\nINTERNAL_AUTH_KEY = os.getenv(\"INTERNAL_AUTH_KEY\", \"\")"
+    },
+    {
+      "id": 2,
+      "file": "inputs.py",
+      "line_numbers": [18,19,20,21],
+      "vulnerability_type": "Weak hashing (MD5)",
+      "severity": "High",
+      "description": "The code constructs an auth token using MD5 which is cryptographically broken and unsuitable for HMAC/secrets.",
+      "fix_explanation": "Use HMAC with SHA-256 (or a stronger KDF) with a secret key from the environment to generate tokens. Reject generation when the key is absent.",
+      "secure_code_snippet": "mac = hmac.new(INTERNAL_AUTH_KEY.encode(), username.encode(), hashlib.sha256); return mac.hexdigest()"
+    },
+    {
+      "id": 3,
+      "file": "inputs.py",
+      "line_numbers": [24,25,26,27,28],
+      "vulnerability_type": "SQL Injection",
+      "severity": "Critical",
+      "description": "SQL query is created with string formatting including user-controlled 'uid' which enables SQL injection.",
+      "fix_explanation": "Use parameterized queries and validate types. Reject non-numeric ids if the schema expects integer ids.",
+      "secure_code_snippet": "c.execute(\"SELECT id,name,balance FROM profiles WHERE id = ?\", (uid,))"
+    },
+    {
+      "id": 4,
+      "file": "inputs.py",
+      "line_numbers": [50,51,52,53],
+      "vulnerability_type": "Command injection / unsafe subprocess usage",
+      "severity": "Critical",
+      "description": "User-supplied 'name' is inserted into a shell command (zip) executed with shell=True, allowing command injection.",
+      "fix_explanation": "Avoid invoking shell utilities with untrusted input. Use the Python zipfile module and reject invalid export names (no path separators).",
+      "secure_code_snippet": "with zipfile.ZipFile(zip_path, 'w') as zf: zf.write(DB_FILE, arcname=os.path.basename(DB_FILE))"
+    },
+    {
+      "id": 5,
+      "file": "inputs.py",
+      "line_numbers": [34,35,36,37,38,39,40,41],
+      "vulnerability_type": "Server-side request forgery (SSRF) and no timeout",
+      "severity": "High",
+      "description": "User-controlled notify_url is directly posted to without validation or timeout, enabling SSRF and long blocking requests.",
+      "fix_explanation": "Validate notify_url against an allow-list of domains and require HTTPS; add a reasonable requests timeout and handle errors safely.",
+      "secure_code_snippet": "if not _is_allowed_notify_url(url): raise ValueError('notify_url invalid'); requests.post(url, json=..., timeout=5)"
+    },
+    {
+      "id": 6,
+      "file": "inputs.py",
+      "line_numbers": [44,45,46,47],
+      "vulnerability_type": "Arbitrary file read / Path traversal",
+      "severity": "High",
+      "description": "update_records opens arbitrary filesystem paths passed from the API, allowing an attacker to read sensitive files.",
+      "fix_explanation": "Restrict config access to a controlled directory (CONFIG_DIR) and only accept base filenames; verify final path is inside CONFIG_DIR.",
+      "secure_code_snippet": "file_path = os.path.join(CONFIG_DIR, basename); if not file_path.startswith(os.path.abspath(CONFIG_DIR)): raise ValueError(...)"
+    },
+    {
+      "id": 7,
+      "file": "inputs.py",
+      "line_numbers": [68,69,70,71,74,75,76,77,80,81,82,83,87,88],
+      "vulnerability_type": "Missing authentication and debug mode enabled",
+      "severity": "Medium",
+      "description": "Critical endpoints (transfer, config, export) are unprotected and the app runs with debug=True which can leak secrets and allow code execution.",
+      "fix_explanation": "Require an admin API key on protected endpoints and ensure debug mode is disabled by default (controlled via environment variable).",
+      "secure_code_snippet": "@require_admin\ndef api_transfer(...):\n    ...\napp.run(host='0.0.0.0', debug=os.getenv('FLASK_DEBUG','false').lower() in ('1','true'))"
+    }
+  ]
+}
