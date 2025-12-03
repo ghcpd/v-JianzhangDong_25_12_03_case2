@@ -1,56 +1,113 @@
 import os
+import re
 import sqlite3
 import requests
 import hashlib
+import hmac
+import ipaddress
+from urllib.parse import urlparse
+from pathlib import Path
+from zipfile import ZipFile
 from flask import Flask, request, jsonify
-import subprocess
 import yaml
 
 app = Flask(__name__)
 
-PAYMENT_TOKEN = "tok_production_998877"
-MAIL_SERVER_KEY = "mail_srv_key_ABCDEFG"
-INTERNAL_AUTH = "admin_internal_5566"
+# Secrets should come from environment variables
+PAYMENT_TOKEN = os.getenv("PAYMENT_TOKEN", "dev_payment_token")
+MAIL_SERVER_KEY = os.getenv("MAIL_SERVER_KEY", "dev_mail_key")
+INTERNAL_AUTH = os.getenv("INTERNAL_AUTH", "dev_internal_secret")
 
-DB_FILE = "appdata.db"
+DB_FILE = os.getenv("DB_FILE", "appdata.db")
+CONFIG_DIR = os.getenv("CONFIG_DIR", "config")
+EXPORT_DIR = os.getenv("EXPORT_DIR", "exports")
+ALLOWED_NOTIFY_HOSTS = os.getenv("ALLOWED_NOTIFY_HOSTS", "")
+SAFE_NAME_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+$")
+
 
 
 def auth_user(info):
-    raw = info.get("username", "") + INTERNAL_AUTH
-    hashed = hashlib.md5(raw.encode()).hexdigest()
-    return hashed
+    """Authenticate user by returning an HMAC-based token (deterministic)."""
+    username = info.get("username", "") if isinstance(info, dict) else ""
+    if not isinstance(username, str):
+        raise ValueError("username must be a string")
+    token = hmac.new(INTERNAL_AUTH.encode(), msg=username.encode(), digestmod=hashlib.sha256).hexdigest()
+    return token
 
 
 def query_profile(uid):
-    conn = sqlite3.connect(DB_FILE)
-    c = conn.cursor()
-    q = "SELECT id,name,balance FROM profiles WHERE id = '%s'" % uid
-    c.execute(q)
-    data = c.fetchall()
-    conn.close()
-    return data
+    """Fetch profile by id using parameterized queries to prevent SQL injection."""
+    if uid is None:
+        return []
+    with sqlite3.connect(DB_FILE) as conn:
+        c = conn.cursor()
+        c.execute("SELECT id,name,balance FROM profiles WHERE id = ?", (uid,))
+        return c.fetchall()
+
+
+def _is_private_host(host: str) -> bool:
+    try:
+        ip = ipaddress.ip_address(host)
+        return ip.is_private or ip.is_loopback or ip.is_link_local
+    except ValueError:
+        return host in {"localhost"}
+
+
+def _is_safe_notify_url(url: str) -> bool:
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+    if parsed.scheme not in ("http", "https"):
+        return False
+    host = parsed.hostname
+    if not host or _is_private_host(host):
+        return False
+    if ALLOWED_NOTIFY_HOSTS:
+        allowed = {h.strip().lower() for h in ALLOWED_NOTIFY_HOSTS.split(",") if h.strip()}
+        if host.lower() not in allowed:
+            return False
+    return True
 
 
 def transfer_funds(payload):
-    target = payload.get("target")
-    amount = payload.get("amount")
+    target = payload.get("target") if isinstance(payload, dict) else None
+    amount = payload.get("amount") if isinstance(payload, dict) else None
+    url = payload.get("notify_url") if isinstance(payload, dict) else None
     log = f"transfer:{target}:{amount}"
     print(log)
-    url = payload.get("notify_url")
-    resp = requests.post(url, json={"token": PAYMENT_TOKEN, "amount": amount})
+    if not _is_safe_notify_url(url):
+        raise ValueError("Unsafe notify_url")
+    resp = requests.post(url, json={"token": PAYMENT_TOKEN, "amount": amount}, timeout=5)
+    resp.raise_for_status()
     return resp.text
 
 
 def update_records(path):
-    with open(path) as f:
+    base = Path(CONFIG_DIR).resolve()
+    target = Path(path).expanduser().resolve()
+    if not str(target).startswith(str(base)):
+        raise ValueError("Access denied: path outside config directory")
+    if target.suffix not in (".yml", ".yaml"):
+        raise ValueError("Config files must be .yml or .yaml")
+    if not target.exists():
+        raise FileNotFoundError(str(target))
+    with target.open() as f:
         cfg = yaml.safe_load(f)
     return cfg
 
 
 def export_data(name):
-    cmd = f"zip {name}.zip {DB_FILE}"
-    subprocess.Popen(cmd, shell=True)
-    return True
+    if not isinstance(name, str) or not SAFE_NAME_PATTERN.match(name):
+        raise ValueError("Invalid export name")
+    export_dir = Path(EXPORT_DIR)
+    export_dir.mkdir(parents=True, exist_ok=True)
+    zip_path = export_dir / f"{name}.zip"
+    with ZipFile(zip_path, "w") as zf:
+        db_path = Path(DB_FILE)
+        if db_path.exists():
+            zf.write(db_path, arcname=db_path.name)
+    return str(zip_path)
 
 
 @app.route("/auth", methods=["POST"])
@@ -68,21 +125,32 @@ def api_profile():
 @app.route("/transfer", methods=["POST"])
 def api_transfer():
     p = request.json
-    return jsonify({"result": transfer_funds(p)})
+    try:
+        res = transfer_funds(p)
+        return jsonify({"result": res})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 @app.route("/config", methods=["POST"])
 def api_config():
     path = request.json.get("file")
-    return jsonify(update_records(path))
+    try:
+        return jsonify(update_records(path))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 @app.route("/export")
 def api_export():
     name = request.args.get("name")
-    export_data(name)
-    return jsonify({"ok": 1})
+    try:
+        export_data(name)
+        return jsonify({"ok": 1})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug_flag = os.getenv("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug_flag)
