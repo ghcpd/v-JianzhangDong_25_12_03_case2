@@ -1,0 +1,82 @@
+{
+  "summary": {
+    "total_vulnerabilities": 7,
+    "critical": 2,
+    "high": 3,
+    "medium": 2,
+    "low": 0
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "inputs_backup.py",
+      "line_numbers": [11,12,13],
+      "vulnerability_type": "Hardcoded secrets",
+      "severity": "Critical",
+      "description": "Hardcoded production secrets (payment token, mail server key, internal auth) stored in source code.",
+      "fix_explanation": "Move secrets to environment variables and require runtime configuration; do not store credentials in source control.",
+      "secure_code_snippet": "PAYMENT_TOKEN = os.environ.get(\"PAYMENT_TOKEN\")"
+    },
+    {
+      "id": 2,
+      "file": "inputs_backup.py",
+      "line_numbers": [19,20],
+      "vulnerability_type": "Weak hashing (MD5)",
+      "severity": "High",
+      "description": "MD5 is used to derive authentication tokens; MD5 is cryptographically broken and fast to brute-force.",
+      "fix_explanation": "Replace MD5 with HMAC-SHA256 using a secret from environment variables (INTERNAL_AUTH).",
+      "secure_code_snippet": "token = hmac.new(INTERNAL_AUTH.encode(), username.encode(), hashlib.sha256).hexdigest()"
+    },
+    {
+      "id": 3,
+      "file": "inputs_backup.py",
+      "line_numbers": [27],
+      "vulnerability_type": "SQL injection",
+      "severity": "Critical",
+      "description": "SQL query constructed by string interpolation allows injection via the uid parameter.",
+      "fix_explanation": "Use parameterized SQL queries (placeholders) and validate the uid is numeric before querying.",
+      "secure_code_snippet": "c.execute(\"SELECT id,name,balance FROM profiles WHERE id = ?\", (uid_int,))"
+    },
+    {
+      "id": 4,
+      "file": "inputs_backup.py",
+      "line_numbers": [39,40],
+      "vulnerability_type": "SSRF / Unvalidated external requests",
+      "severity": "High",
+      "description": "User-controlled notify_url is posted to with a sensitive token; allows SSRF and potential leak of PAYMENT_TOKEN.",
+      "fix_explanation": "Validate notify_url scheme and hostname against a whitelist and require HTTPS; require PAYMENT_TOKEN from env.",
+      "secure_code_snippet": "parsed = urlparse(url)\nif parsed.scheme != 'https': raise ValueError('notify_url must use https')"
+    },
+    {
+      "id": 5,
+      "file": "inputs_backup.py",
+      "line_numbers": [52],
+      "vulnerability_type": "Command injection via subprocess",
+      "severity": "High",
+      "description": "Subprocess with shell=True and user-controlled arguments permits command injection.",
+      "fix_explanation": "Avoid shell=True and use Python's zipfile module to create archives or call subprocess with list args and no shell.",
+      "secure_code_snippet": "with zipfile.ZipFile(f\"{name}.zip\", 'w') as z: z.write(DB_FILE)"
+    },
+    {
+      "id": 6,
+      "file": "inputs_backup.py",
+      "line_numbers": [34],
+      "vulnerability_type": "Arbitrary file read",
+      "severity": "Medium",
+      "description": "update_records reads arbitrary path from users; allows path traversal to read sensitive local files.
+",
+      "fix_explanation": "Restrict config file reads to a configured directory and validate real path to prevent traversal.",
+      "secure_code_snippet": "full = os.path.realpath(os.path.join(CONFIG_DIR, path))\nif not full.startswith(os.path.realpath(CONFIG_DIR)): raise ValueError('access to path not allowed')"
+    },
+    {
+      "id": 7,
+      "file": "inputs_backup.py",
+      "line_numbers": [88],
+      "vulnerability_type": "Debug mode enabled",
+      "severity": "Medium",
+      "description": "Flask app is started with debug=True, which enables interactive debugger and code execution on errors.",
+      "fix_explanation": "Control debug mode via environment variable and do not run with debug enabled in production.",
+      "secure_code_snippet": "debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'\napp.run(debug=debug_mode)"
+    }
+  ]
+}
