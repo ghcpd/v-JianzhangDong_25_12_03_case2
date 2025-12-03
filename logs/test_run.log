@@ -1,0 +1,358 @@
+=== RUN_TESTS START 2025-12-03T07:41:13.561655Z ===
+===== TEST START: input_backup at 2025-12-03T07:41:13.561676Z =====
+FF..                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+================================== FAILURES ===================================
+_________________________ test_sql_injection_behavior _________________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-69/test_sql_injection_behavior0')
+
+    def test_sql_injection_behavior(tmp_path):
+        mod = load_module(MODULE_NAME)
+        dbfile = str(tmp_path / "test.db")
+        make_db(dbfile)
+        # point the module at our test DB
+        setattr(mod, "DB_FILE", dbfile)
+    
+        # injection string that would return all rows if SQL is not parameterized
+        inj = "1' OR '1'='1"
+        result = mod.query_profile(inj)
+        if MODULE_NAME == "inputs_backup":
+            # vulnerable: returns at least 2 rows
+            assert len(result) >= 2
+        else:
+            # fixed: invalid id -> empty result
+>           assert result == []
+E           AssertionError: assert [('1', 'Alice... 'Bob', 50.0)] == []
+E             
+E             Left contains 2 more items, first extra item: ('1', 'Alice', 100.0)
+E             Use -v to get more diff
+
+tests\test_inputs.py:45: AssertionError
+____________________ test_update_records_path_restriction _____________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-69/test_update_records_path_restr0')
+
+    def test_update_records_path_restriction(tmp_path):
+        mod = load_module(MODULE_NAME)
+    
+        # create a configs dir and a safe file
+        configs = tmp_path / "configs"
+        configs.mkdir()
+        safe_file = configs / "safe.yaml"
+        safe_file.write_text("foo: bar")
+    
+        # put a secret file outside configs
+        secret = tmp_path / "secret.yaml"
+        secret.write_text("super: secret")
+    
+        # For the secure module, set CONFIG_DIR to our configs directory
+        setattr(mod, "CONFIG_DIR", str(configs))
+    
+        if MODULE_NAME == "inputs_backup":
+            # backup accepts arbitrary path
+            res = mod.update_records(str(secret))
+            assert isinstance(res, dict)
+            assert res.get("super") == "secret"
+        else:
+            # fixed should only accept basenames in CONFIG_DIR
+            # successful read using basename
+>           res = mod.update_records("safe.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_inputs.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'safe.yaml'
+
+    def update_records(path):
+>       with open(path) as f:
+             ^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'safe.yaml'
+
+input_backup.py:45: FileNotFoundError
+============================== warnings summary ===============================
+tests/test_inputs.py::test_export_behavior
+  D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\oswe-mini-secondary\v-JianzhangDong_25_12_03_case2\tests\test_inputs.py:99: RuntimeWarning: bool is used as a file descriptor
+    assert os.path.exists(zpath)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_inputs.py::test_sql_injection_behavior - AssertionError: as...
+FAILED tests/test_inputs.py::test_update_records_path_restriction - FileNotFo...
+2 failed, 2 passed, 1 warning in 0.87s
+[2025-12-03T07:41:15.666482Z] input_backup TEST FAILED (exit=1)
+
+===== TEST START: inputs_backup at 2025-12-03T07:41:15.666499Z =====
+....                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+4 passed in 0.66s
+[2025-12-03T07:41:17.118861Z] inputs_backup TEST PASSED
+
+===== TEST START: inputs at 2025-12-03T07:41:17.118870Z =====
+....                                                                     [100%]
+4 passed in 0.67s
+[2025-12-03T07:41:18.555757Z] inputs TEST PASSED
+
+TEST FAILED
+=== RUN_TESTS END 2025-12-03T07:41:18.555768Z ===
+
+[2025/12/03 ���� 15:41:18.55] run_tests exit=1 
+TEST FAILED 
+=== RUN_TESTS START 2025-12-03T07:41:47.692195Z ===
+===== TEST START: input_backup at 2025-12-03T07:41:47.692227Z =====
+....                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+============================== warnings summary ===============================
+tests/test_inputs.py::test_export_behavior
+  D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\oswe-mini-secondary\v-JianzhangDong_25_12_03_case2\tests\test_inputs.py:99: RuntimeWarning: bool is used as a file descriptor
+    assert os.path.exists(zpath)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 1 warning in 0.72s
+[2025-12-03T07:41:49.242039Z] input_backup TEST PASSED
+
+===== TEST START: inputs_backup at 2025-12-03T07:41:49.242068Z =====
+....                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+4 passed in 0.72s
+[2025-12-03T07:41:50.900575Z] inputs_backup TEST PASSED
+
+===== TEST START: inputs at 2025-12-03T07:41:50.900585Z =====
+....                                                                     [100%]
+4 passed in 0.67s
+[2025-12-03T07:41:52.405372Z] inputs TEST PASSED
+
+TEST PASSED
+=== RUN_TESTS END 2025-12-03T07:41:52.405385Z ===
+
+=== AUTO TEST RUN START: 2025-12-03T07:42:11.380104Z ===
+=== RUN_TESTS START 2025-12-03T07:42:11.501249Z ===
+===== TEST START: input_backup at 2025-12-03T07:42:11.501278Z =====
+....                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+============================== warnings summary ===============================
+tests/test_inputs.py::test_export_behavior
+  D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\oswe-mini-secondary\v-JianzhangDong_25_12_03_case2\tests\test_inputs.py:99: RuntimeWarning: bool is used as a file descriptor
+    assert os.path.exists(zpath)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 1 warning in 0.65s
+[2025-12-03T07:42:12.948706Z] input_backup TEST PASSED
+
+===== TEST START: inputs_backup at 2025-12-03T07:42:12.948722Z =====
+....                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+4 passed in 0.65s
+[2025-12-03T07:42:14.369182Z] inputs_backup TEST PASSED
+
+===== TEST START: inputs at 2025-12-03T07:42:14.369202Z =====
+....                                                                     [100%]
+4 passed in 0.64s
+[2025-12-03T07:42:15.809504Z] inputs TEST PASSED
+
+TEST PASSED
+=== RUN_TESTS END 2025-12-03T07:42:15.809515Z ===
+
+��һ����������ʹ�ô��ļ��������޷����ʡ�
+D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\oswe-mini-secondary\v-JianzhangDong_25_12_03_case2\run_tests.py:15: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return datetime.datetime.utcnow().isoformat() + "Z"
+��һ����������ʹ�ô��ļ��������޷����ʡ�
+��һ����������ʹ�ô��ļ��������޷����ʡ�
+
+2025-12-03T07:42:15.823912Z run_test.bat exit=0 TEST PASSED
+=== AUTO TEST RUN END ===
+
+=== RUN_TESTS START 2025-12-03T07:46:34.729810Z ===
+===== TEST START: input_backup at 2025-12-03T07:46:34.729873Z =====
+FFF.                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+================================== FAILURES ===================================
+_________________________ test_sql_injection_behavior _________________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-78/test_sql_injection_behavior0')
+
+    def test_sql_injection_behavior(tmp_path):
+        mod = load_module(MODULE_NAME)
+        dbfile = str(tmp_path / "test.db")
+        make_db(dbfile)
+        # point the module at our test DB
+        setattr(mod, "DB_FILE", dbfile)
+    
+        # injection string that would return all rows if SQL is not parameterized
+        inj = "1' OR '1'='1"
+        result = mod.query_profile(inj)
+        # Secure behavior: parameterized queries must prevent SQL injection
+>       assert result == [], "SQL injection should be prevented by parameterized queries"
+E       AssertionError: SQL injection should be prevented by parameterized queries
+E       assert [('1', 'Alice... 'Bob', 50.0)] == []
+E         
+E         Left contains 2 more items, first extra item: ('1', 'Alice', 100.0)
+E         Use -v to get more diff
+
+tests\test_inputs.py:41: AssertionError
+____________________ test_update_records_path_restriction _____________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-78/test_update_records_path_restr0')
+
+    def test_update_records_path_restriction(tmp_path):
+        mod = load_module(MODULE_NAME)
+    
+        # create a configs dir and a safe file
+        configs = tmp_path / "configs"
+        configs.mkdir()
+        safe_file = configs / "safe.yaml"
+        safe_file.write_text("foo: bar")
+    
+        # put a secret file outside configs
+        secret = tmp_path / "secret.yaml"
+        secret.write_text("super: secret")
+    
+        # For the secure module, set CONFIG_DIR to our configs directory
+        setattr(mod, "CONFIG_DIR", str(configs))
+    
+        # Secure behavior: only allow basenames in CONFIG_DIR
+>       res = mod.update_records("safe.yaml")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_inputs.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'safe.yaml'
+
+    def update_records(path):
+>       with open(path) as f:
+             ^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'safe.yaml'
+
+input_backup.py:45: FileNotFoundError
+____________________________ test_export_behavior _____________________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-78/test_export_behavior0')
+
+    def test_export_behavior(tmp_path):
+        mod = load_module(MODULE_NAME)
+    
+        dbfile = str(tmp_path / "test2.db")
+        make_db(dbfile)
+        setattr(mod, "DB_FILE", dbfile)
+    
+        name = "safe_export"
+        # Secure behavior: should create a zip and return a path
+        zpath = mod.export_data(name)
+>       assert isinstance(zpath, str)
+E       assert False
+E        +  where False = isinstance(True, str)
+
+tests\test_inputs.py:83: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_inputs.py::test_sql_injection_behavior - AssertionError: SQ...
+FAILED tests/test_inputs.py::test_update_records_path_restriction - FileNotFo...
+FAILED tests/test_inputs.py::test_export_behavior - assert False
+3 failed, 1 passed in 0.79s
+[2025-12-03T07:46:36.326443Z] input_backup TEST FAILED (exit=1)
+
+===== TEST START: inputs_backup at 2025-12-03T07:46:36.326455Z =====
+FFF.                                                                     [100%]'zip' 锟斤拷锟斤拷锟节诧拷锟斤拷锟解部锟斤拷锟筋，也锟斤拷锟角匡拷锟斤拷锟叫的筹拷锟斤拷
+锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷
+
+================================== FAILURES ===================================
+_________________________ test_sql_injection_behavior _________________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-79/test_sql_injection_behavior0')
+
+    def test_sql_injection_behavior(tmp_path):
+        mod = load_module(MODULE_NAME)
+        dbfile = str(tmp_path / "test.db")
+        make_db(dbfile)
+        # point the module at our test DB
+        setattr(mod, "DB_FILE", dbfile)
+    
+        # injection string that would return all rows if SQL is not parameterized
+        inj = "1' OR '1'='1"
+        result = mod.query_profile(inj)
+        # Secure behavior: parameterized queries must prevent SQL injection
+>       assert result == [], "SQL injection should be prevented by parameterized queries"
+E       AssertionError: SQL injection should be prevented by parameterized queries
+E       assert [('1', 'Alice... 'Bob', 50.0)] == []
+E         
+E         Left contains 2 more items, first extra item: ('1', 'Alice', 100.0)
+E         Use -v to get more diff
+
+tests\test_inputs.py:41: AssertionError
+____________________ test_update_records_path_restriction _____________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-79/test_update_records_path_restr0')
+
+    def test_update_records_path_restriction(tmp_path):
+        mod = load_module(MODULE_NAME)
+    
+        # create a configs dir and a safe file
+        configs = tmp_path / "configs"
+        configs.mkdir()
+        safe_file = configs / "safe.yaml"
+        safe_file.write_text("foo: bar")
+    
+        # put a secret file outside configs
+        secret = tmp_path / "secret.yaml"
+        secret.write_text("super: secret")
+    
+        # For the secure module, set CONFIG_DIR to our configs directory
+        setattr(mod, "CONFIG_DIR", str(configs))
+    
+        # Secure behavior: only allow basenames in CONFIG_DIR
+>       res = mod.update_records("safe.yaml")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_inputs.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'safe.yaml'
+
+    def update_records(path):
+>       with open(path) as f:
+             ^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'safe.yaml'
+
+inputs_backup.py:45: FileNotFoundError
+____________________________ test_export_behavior _____________________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-79/test_export_behavior0')
+
+    def test_export_behavior(tmp_path):
+        mod = load_module(MODULE_NAME)
+    
+        dbfile = str(tmp_path / "test2.db")
+        make_db(dbfile)
+        setattr(mod, "DB_FILE", dbfile)
+    
+        name = "safe_export"
+        # Secure behavior: should create a zip and return a path
+        zpath = mod.export_data(name)
+>       assert isinstance(zpath, str)
+E       assert False
+E        +  where False = isinstance(True, str)
+
+tests\test_inputs.py:83: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_inputs.py::test_sql_injection_behavior - AssertionError: SQ...
+FAILED tests/test_inputs.py::test_update_records_path_restriction - FileNotFo...
+FAILED tests/test_inputs.py::test_export_behavior - assert False
+3 failed, 1 passed in 0.75s
+[2025-12-03T07:46:37.885977Z] inputs_backup TEST FAILED (exit=1)
+
+===== TEST START: inputs at 2025-12-03T07:46:37.886009Z =====
+....                                                                     [100%]
+4 passed in 0.65s
+[2025-12-03T07:46:39.338937Z] inputs TEST PASSED
+
+TEST FAILED
+=== RUN_TESTS END 2025-12-03T07:46:39.338948Z ===
+
