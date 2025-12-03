@@ -1,0 +1,117 @@
+{
+  "summary": {
+    "total_vulnerabilities": 7,
+    "critical": 3,
+    "high": 2,
+    "medium": 1,
+    "low": 1
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "inputs.py",
+      "line_numbers": [
+        11,
+        12,
+        13
+      ],
+      "vulnerability_type": "Hardcoded secrets",
+      "severity": "High",
+      "description": "Sensitive tokens and keys are hardcoded in the source, risking credential leakage.",
+      "fix_explanation": "Moved secrets to environment variables with development defaults and warnings when unset.",
+      "secure_code_snippet": "PAYMENT_TOKEN = os.environ.get('PAYMENT_TOKEN', 'DEV_TOKEN_CHANGE_ME')"
+    },
+    {
+      "id": 2,
+      "file": "inputs.py",
+      "line_numbers": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "vulnerability_type": "Weak cryptography",
+      "severity": "Medium",
+      "description": "MD5 hashing with a static secret for auth token generation is vulnerable to collision and brute force attacks.",
+      "fix_explanation": "Replaced MD5 with HMAC-SHA256 using a server-side secret loaded from the environment; require username input.",
+      "secure_code_snippet": "token = hmac.new(INTERNAL_AUTH_SECRET.encode(), msg=str(username).encode(), digestmod=hashlib.sha256).hexdigest()"
+    },
+    {
+      "id": 3,
+      "file": "inputs.py",
+      "line_numbers": [
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "vulnerability_type": "SQL Injection",
+      "severity": "Critical",
+      "description": "User input is interpolated directly into SQL queries allowing injection.",
+      "fix_explanation": "Validated user id as integer and used parameterized queries with sqlite placeholders.",
+      "secure_code_snippet": "c.execute('SELECT id,name,balance FROM profiles WHERE id = ?', (uid_int,))"
+    },
+    {
+      "id": 4,
+      "file": "inputs.py",
+      "line_numbers": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41
+      ],
+      "vulnerability_type": "SSRF and insecure external request",
+      "severity": "Critical",
+      "description": "transfer_funds posts to a user-supplied URL without validation, enabling SSRF and token leakage.",
+      "fix_explanation": "Validated notify_url to allow only HTTPS and non-private hosts; enforced timeouts; warned on dev tokens.",
+      "secure_code_snippet": "notify_url = validate_notify_url(payload.get('notify_url'))"
+    },
+    {
+      "id": 5,
+      "file": "inputs.py",
+      "line_numbers": [
+        44,
+        45,
+        46,
+        47
+      ],
+      "vulnerability_type": "Path traversal / arbitrary file read",
+      "severity": "High",
+      "description": "Arbitrary filesystem paths from clients are read and parsed, enabling data exfiltration.",
+      "fix_explanation": "Restricted config loads to a dedicated CONFIG_DIR, enforced allowed extensions, and checked path anchoring.",
+      "secure_code_snippet": "candidate = (SAFE_CONFIG_DIR / path_str).resolve(); if not str(candidate).startswith(str(SAFE_CONFIG_DIR)):\n    raise ValueError('invalid path')"
+    },
+    {
+      "id": 6,
+      "file": "inputs.py",
+      "line_numbers": [
+        50,
+        51,
+        52
+      ],
+      "vulnerability_type": "Command injection",
+      "severity": "Critical",
+      "description": "export_data builds a shell command with untrusted input and executes it with shell=True.",
+      "fix_explanation": "Replaced shell execution with Python's zipfile module and enforced a strict filename whitelist.",
+      "secure_code_snippet": "with zipfile.ZipFile(archive_path, 'w', compression=zipfile.ZIP_DEFLATED) as zf:\n    zf.write(DB_FILE, arcname=DB_FILE.name)"
+    },
+    {
+      "id": 7,
+      "file": "inputs.py",
+      "line_numbers": [
+        87,
+        88
+      ],
+      "vulnerability_type": "Debug mode enabled",
+      "severity": "Low",
+      "description": "Flask debug mode exposes interactive debugger in production.",
+      "fix_explanation": "Made debug opt-in via FLASK_DEBUG environment variable, off by default.",
+      "secure_code_snippet": "debug = os.environ.get('FLASK_DEBUG', '0') == '1'; app.run(debug=debug)"
+    }
+  ]
+}
