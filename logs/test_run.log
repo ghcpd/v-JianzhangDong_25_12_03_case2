@@ -1,0 +1,301 @@
+2025-12-03 14:46:03,954 - INFO - Detected environment: windows
+2025-12-03 14:46:03,955 - INFO - ============================================================
+2025-12-03 14:46:03,955 - INFO - Starting Security Audit Tests - Environment: windows
+2025-12-03 14:46:03,955 - INFO - Timestamp: 2025-12-03T14:46:03.955322
+2025-12-03 14:46:03,955 - INFO - ============================================================
+2025-12-03 14:46:03,955 - INFO - Running test script: run_test.bat
+2025-12-03 14:46:03,955 - INFO - Executing: run_test.bat
+2025-12-03 14:46:05,049 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+2. Testing imports...
+ERROR: Secure version import failed
+
+2025-12-03 14:46:05,055 - WARNING - STDERR:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys; sys.path.insert(0, '.'); from inputs import app; print('‚ú?Secure version imports successfully')
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\haiku-4.5\v-JianzhangDong_25_12_03_case2\inputs.py", line 4, in <module>
+    import bcrypt
+ModuleNotFoundError: No module named 'bcrypt'
+
+2025-12-03 14:46:05,075 - INFO - ============================================================
+2025-12-03 14:46:05,075 - INFO - Test Summary:
+2025-12-03 14:46:05,075 - INFO -   run_test.bat: FAILED
+2025-12-03 14:46:05,076 - INFO - TEST FAILED
+2025-12-03 14:46:05,076 - INFO - ============================================================
+2025-12-03 14:48:12,640 - INFO - Detected environment: windows
+2025-12-03 14:48:12,640 - INFO - ======================================================================
+2025-12-03 14:48:12,640 - INFO - Starting Security Audit Tests - Environment: windows
+2025-12-03 14:48:12,640 - INFO - Timestamp: 2025-12-03T14:48:12.640954
+2025-12-03 14:48:12,641 - INFO - ======================================================================
+2025-12-03 14:48:12,641 - INFO - 
+2025-12-03 14:48:12,641 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:48:12,641 - INFO - Testing: inputs_backup.py [VULNERABLE (Backup)]
+2025-12-03 14:48:12,641 - INFO - Test Start Time: 2025-12-03T14:48:12.641812
+2025-12-03 14:48:12,641 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:48:12,642 - INFO - [1/4] Running syntax check for inputs_backup.py...
+2025-12-03 14:48:12,647 - INFO - [2/4] Testing imports for inputs_backup.py...
+2025-12-03 14:48:13,399 - INFO - [3/4] Checking vulnerabilities in inputs_backup.py...
+2025-12-03 14:48:13,406 - INFO - [4/4] Running test script for inputs_backup.py...
+2025-12-03 14:48:13,406 - INFO - Executing: run_test.bat
+2025-12-03 14:48:14,211 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+2. Testing imports...
+ERROR: Secure version import failed
+
+2025-12-03 14:48:14,211 - WARNING - STDERR:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys; sys.path.insert(0, '.'); from inputs import app; print('‚ú?Secure version imports successfully')
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\haiku-4.5\v-JianzhangDong_25_12_03_case2\inputs.py", line 4, in <module>
+    import bcrypt
+ModuleNotFoundError: No module named 'bcrypt'
+
+2025-12-03 14:48:14,213 - INFO - Test End Time: 2025-12-03T14:48:14.213951
+2025-12-03 14:48:14,214 - INFO - Result: FAILED
+2025-12-03 14:48:14,214 - INFO - 
+2025-12-03 14:48:14,214 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:48:14,214 - INFO - Testing: inputs.py [SECURE (Fixed)]
+2025-12-03 14:48:14,215 - INFO - Test Start Time: 2025-12-03T14:48:14.214996
+2025-12-03 14:48:14,215 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:48:14,215 - INFO - [1/4] Running syntax check for inputs.py...
+2025-12-03 14:48:14,220 - INFO - [2/4] Testing imports for inputs.py...
+2025-12-03 14:48:14,223 - INFO - [3/4] Checking vulnerabilities in inputs.py...
+2025-12-03 14:48:14,232 - INFO - [4/4] Running test script for inputs.py...
+2025-12-03 14:48:14,233 - INFO - Executing: run_test.bat
+2025-12-03 14:48:15,067 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+2. Testing imports...
+ERROR: Secure version import failed
+
+2025-12-03 14:48:15,067 - WARNING - STDERR:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys; sys.path.insert(0, '.'); from inputs import app; print('‚ú?Secure version imports successfully')
+                                         ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\vscoderprojects\v-JianzhangDong_25_12_03_case2\haiku-4.5\v-JianzhangDong_25_12_03_case2\inputs.py", line 4, in <module>
+    import bcrypt
+ModuleNotFoundError: No module named 'bcrypt'
+
+2025-12-03 14:48:15,070 - INFO - Test End Time: 2025-12-03T14:48:15.070429
+2025-12-03 14:48:15,070 - INFO - Result: FAILED
+2025-12-03 14:48:15,070 - INFO - 
+2025-12-03 14:48:15,071 - INFO - ======================================================================
+2025-12-03 14:48:15,071 - INFO - OVERALL TEST SUMMARY
+2025-12-03 14:48:15,071 - INFO - ======================================================================
+2025-12-03 14:48:15,074 - INFO - ======================================================================
+2025-12-03 14:48:15,074 - INFO - FINAL STATUS: TEST FAILED
+2025-12-03 14:48:15,074 - INFO - Completion Time: 2025-12-03T14:48:15.074728
+2025-12-03 14:48:15,074 - INFO - ======================================================================
+2025-12-03 14:50:00,046 - INFO - Detected environment: windows
+2025-12-03 14:50:00,047 - INFO - ======================================================================
+2025-12-03 14:50:00,047 - INFO - Starting Security Audit Tests - Environment: windows
+2025-12-03 14:50:00,047 - INFO - Timestamp: 2025-12-03T14:50:00.047371
+2025-12-03 14:50:00,047 - INFO - ======================================================================
+2025-12-03 14:50:00,047 - INFO - 
+2025-12-03 14:50:00,047 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:50:00,047 - INFO - Testing: inputs_backup.py [VULNERABLE (Backup)]
+2025-12-03 14:50:00,048 - INFO - Test Start Time: 2025-12-03T14:50:00.047978
+2025-12-03 14:50:00,048 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:50:00,048 - INFO - [1/4] Running syntax check for inputs_backup.py...
+2025-12-03 14:50:00,053 - INFO - [2/4] Testing imports for inputs_backup.py...
+2025-12-03 14:50:00,763 - INFO - [3/4] Checking vulnerabilities in inputs_backup.py...
+2025-12-03 14:50:00,772 - INFO - [4/4] Running test script for inputs_backup.py...
+2025-12-03 14:50:00,772 - INFO - Executing: run_test.bat
+2025-12-03 14:50:01,232 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+‚ú?Syntax check passed
+
+2. Checking for known vulnerabilities in backup...
+‚ú?Hardcoded secret found in backup (expected
+‚ú?SQL injection vulnerability found in backup (expected
+‚ú?Command injection vulnerability found in backup (expected
+‚ú?Debug mode enabled in backup (expected
+‚ú?Weak hashing found in backup (expected
+
+3. Checking for fixes in secure version...
+‚ú?Secrets moved to environment variables
+‚ú?SQL injection fixed with parameterized queries
+‚ú?Command injection fixed - using zipfile API instead of shell
+‚ú?Debug mode now controlled by environment variable
+‚ú?Weak hashing replaced with bcrypt
+‚ú?SSRF protection added
+‚ú?Path traversal fixed with path validation
+
+=== All Tests Passed ===
+
+2025-12-03 14:50:01,234 - INFO - Test End Time: 2025-12-03T14:50:01.234601
+2025-12-03 14:50:01,234 - INFO - Result: PASSED
+2025-12-03 14:50:01,234 - INFO - 
+2025-12-03 14:50:01,235 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:50:01,235 - INFO - Testing: inputs.py [SECURE (Fixed)]
+2025-12-03 14:50:01,235 - INFO - Test Start Time: 2025-12-03T14:50:01.235318
+2025-12-03 14:50:01,235 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:50:01,235 - INFO - [1/4] Running syntax check for inputs.py...
+2025-12-03 14:50:01,239 - INFO - [2/4] Testing imports for inputs.py...
+2025-12-03 14:50:01,247 - INFO - [3/4] Checking vulnerabilities in inputs.py...
+2025-12-03 14:50:01,257 - INFO - [4/4] Running test script for inputs.py...
+2025-12-03 14:50:01,257 - INFO - Executing: run_test.bat
+2025-12-03 14:50:01,658 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+‚ú?Syntax check passed
+
+2. Checking for known vulnerabilities in backup...
+‚ú?Hardcoded secret found in backup (expected
+‚ú?SQL injection vulnerability found in backup (expected
+‚ú?Command injection vulnerability found in backup (expected
+‚ú?Debug mode enabled in backup (expected
+‚ú?Weak hashing found in backup (expected
+
+3. Checking for fixes in secure version...
+‚ú?Secrets moved to environment variables
+‚ú?SQL injection fixed with parameterized queries
+‚ú?Command injection fixed - using zipfile API instead of shell
+‚ú?Debug mode now controlled by environment variable
+‚ú?Weak hashing replaced with bcrypt
+‚ú?SSRF protection added
+‚ú?Path traversal fixed with path validation
+
+=== All Tests Passed ===
+
+2025-12-03 14:50:01,660 - INFO - Test End Time: 2025-12-03T14:50:01.660232
+2025-12-03 14:50:01,660 - INFO - Result: PASSED
+2025-12-03 14:50:01,660 - INFO - 
+2025-12-03 14:50:01,660 - INFO - ======================================================================
+2025-12-03 14:50:01,660 - INFO - OVERALL TEST SUMMARY
+2025-12-03 14:50:01,660 - INFO - ======================================================================
+2025-12-03 14:50:01,662 - INFO - ======================================================================
+2025-12-03 14:50:01,662 - INFO - FINAL STATUS: TEST PASSED
+2025-12-03 14:50:01,662 - INFO - Completion Time: 2025-12-03T14:50:01.662790
+2025-12-03 14:50:01,662 - INFO - ======================================================================
+2025-12-03 14:51:09,859 - INFO - Detected environment: windows
+2025-12-03 14:51:09,859 - INFO - ======================================================================
+2025-12-03 14:51:09,859 - INFO - Starting Security Audit Tests - Environment: windows
+2025-12-03 14:51:09,859 - INFO - Timestamp: 2025-12-03T14:51:09.859350
+2025-12-03 14:51:09,859 - INFO - ======================================================================
+2025-12-03 14:51:09,859 - INFO - 
+2025-12-03 14:51:09,859 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:51:09,859 - INFO - Testing: inputs_backup.py [VULNERABLE (Backup)]
+2025-12-03 14:51:09,859 - INFO - Test Start Time: 2025-12-03T14:51:09.859526
+2025-12-03 14:51:09,859 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:51:09,859 - INFO - [1/4] Running syntax check for inputs_backup.py...
+2025-12-03 14:51:09,861 - INFO -   [OK] Syntax OK
+2025-12-03 14:51:09,861 - INFO - [2/4] Testing imports for inputs_backup.py...
+2025-12-03 14:51:10,572 - INFO -   [OK] Imports OK
+2025-12-03 14:51:10,572 - INFO - [3/4] Checking vulnerabilities in inputs_backup.py...
+2025-12-03 14:51:10,573 - INFO -   ‚úì Hardcoded secret (found as expected)
+2025-12-03 14:51:10,576 - INFO -   ‚úì SQL injection (found as expected)
+2025-12-03 14:51:10,577 - INFO -   ‚úì Command injection (found as expected)
+2025-12-03 14:51:10,577 - INFO -   ‚úì Debug mode enabled (found as expected)
+2025-12-03 14:51:10,577 - INFO -   ‚úì Weak hashing (found as expected)
+2025-12-03 14:51:10,578 - INFO - [4/4] Running test script for inputs_backup.py...
+2025-12-03 14:51:10,578 - INFO - Executing: run_test.bat
+2025-12-03 14:51:10,999 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+ÈâÅ?Syntax check passed
+
+2. Checking for known vulnerabilities in backup...
+ÈâÅ?Hardcoded secret found in backup (expected
+ÈâÅ?SQL injection vulnerability found in backup (expected
+ÈâÅ?Command injection vulnerability found in backup (expected
+ÈâÅ?Debug mode enabled in backup (expected
+ÈâÅ?Weak hashing found in backup (expected
+
+3. Checking for fixes in secure version...
+ÈâÅ?Secrets moved to environment variables
+ÈâÅ?SQL injection fixed with parameterized queries
+ÈâÅ?Command injection fixed - using zipfile API instead of shell
+ÈâÅ?Debug mode now controlled by environment variable
+ÈâÅ?Weak hashing replaced with bcrypt
+ÈâÅ?SSRF protection added
+ÈâÅ?Path traversal fixed with path validation
+
+=== All Tests Passed ===
+
+2025-12-03 14:51:11,000 - INFO -   [OK] Test script passed
+2025-12-03 14:51:11,000 - INFO - Test End Time: 2025-12-03T14:51:11.000178
+2025-12-03 14:51:11,000 - INFO - Result: PASSED
+2025-12-03 14:51:11,000 - INFO - 
+2025-12-03 14:51:11,000 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:51:11,000 - INFO - Testing: inputs.py [SECURE (Fixed)]
+2025-12-03 14:51:11,000 - INFO - Test Start Time: 2025-12-03T14:51:11.000373
+2025-12-03 14:51:11,000 - INFO - ----------------------------------------------------------------------
+2025-12-03 14:51:11,000 - INFO - [1/4] Running syntax check for inputs.py...
+2025-12-03 14:51:11,003 - INFO -   [OK] Syntax OK
+2025-12-03 14:51:11,003 - INFO - [2/4] Testing imports for inputs.py...
+2025-12-03 14:51:11,004 - INFO -   [OK] Import check skipped (dependencies may not be installed): No module named 'bcrypt'
+2025-12-03 14:51:11,004 - INFO - [3/4] Checking vulnerabilities in inputs.py...
+2025-12-03 14:51:11,005 - INFO -   ‚úì Secrets moved to env
+2025-12-03 14:51:11,005 - INFO -   ‚úì SQL injection fixed
+2025-12-03 14:51:11,006 - INFO -   ‚úì Command injection fixed
+2025-12-03 14:51:11,006 - INFO -   ‚úì Debug mode controlled
+2025-12-03 14:51:11,006 - INFO -   ‚úì Weak hashing replaced
+2025-12-03 14:51:11,007 - INFO -   ‚úì SSRF protection added
+2025-12-03 14:51:11,007 - INFO -   ‚úì Path traversal fixed
+2025-12-03 14:51:11,007 - INFO - [4/4] Running test script for inputs.py...
+2025-12-03 14:51:11,007 - INFO - Executing: run_test.bat
+2025-12-03 14:51:11,411 - INFO - STDOUT:
+=== Running Security Tests ===
+Platform: Windows
+Python 3.14.0
+
+1. Running syntax check...
+ÈâÅ?Syntax check passed
+
+2. Checking for known vulnerabilities in backup...
+ÈâÅ?Hardcoded secret found in backup (expected
+ÈâÅ?SQL injection vulnerability found in backup (expected
+ÈâÅ?Command injection vulnerability found in backup (expected
+ÈâÅ?Debug mode enabled in backup (expected
+ÈâÅ?Weak hashing found in backup (expected
+
+3. Checking for fixes in secure version...
+ÈâÅ?Secrets moved to environment variables
+ÈâÅ?SQL injection fixed with parameterized queries
+ÈâÅ?Command injection fixed - using zipfile API instead of shell
+ÈâÅ?Debug mode now controlled by environment variable
+ÈâÅ?Weak hashing replaced with bcrypt
+ÈâÅ?SSRF protection added
+ÈâÅ?Path traversal fixed with path validation
+
+=== All Tests Passed ===
+
+2025-12-03 14:51:11,411 - INFO -   [OK] Test script passed
+2025-12-03 14:51:11,411 - INFO - Test End Time: 2025-12-03T14:51:11.411204
+2025-12-03 14:51:11,411 - INFO - Result: PASSED
+2025-12-03 14:51:11,411 - INFO - 
+2025-12-03 14:51:11,411 - INFO - ======================================================================
+2025-12-03 14:51:11,411 - INFO - OVERALL TEST SUMMARY
+2025-12-03 14:51:11,411 - INFO - ======================================================================
+2025-12-03 14:51:11,411 - INFO - [PASS] inputs_backup.py: PASSED
+2025-12-03 14:51:11,411 - INFO - [PASS] inputs.py: PASSED
+2025-12-03 14:51:11,411 - INFO - ======================================================================
+2025-12-03 14:51:11,411 - INFO - FINAL STATUS: TEST PASSED
+2025-12-03 14:51:11,411 - INFO - Completion Time: 2025-12-03T14:51:11.411568
+2025-12-03 14:51:11,411 - INFO - ======================================================================
