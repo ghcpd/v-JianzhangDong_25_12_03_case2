@@ -1,0 +1,468 @@
+===== 2025-12-03T07:27:41.673364Z module=input_backup =====
+FFFF.FFFF                                                                [100%]
+================================== FAILURES ===================================
+_______________________ test_auth_user_uses_strong_hash _______________________
+
+    def test_auth_user_uses_strong_hash():
+        token = mod.auth_user({"username": "alice"})
+        assert isinstance(token, str)
+>       assert len(token) == 64  # SHA-256 hex digest length
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert 32 == 64
+E        +  where 32 = len('cc5617e750ec29d47c7e36f695c75649')
+
+tests\test_input.py:29: AssertionError
+________________ test_query_profile_blocks_injection[1 OR 1=1] ________________
+
+uid = '1 OR 1=1'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-20/test_query_profile_blocks_inje0/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[abc] ___________________
+
+uid = 'abc'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-20/test_query_profile_blocks_inje1/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[None] __________________
+
+uid = None
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-20/test_query_profile_blocks_inje2/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+_____________________ test_transfer_rejects_insecure_url ______________________
+
+    def test_transfer_rejects_insecure_url():
+        payload = {"target": "acct", "amount": 10, "notify_url": "http://example.com"}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:45: Failed
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_transfer_calls_requests_with_valid_url _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029CB931D260>
+
+    def test_transfer_calls_requests_with_valid_url(monkeypatch):
+        called = {}
+    
+        def fake_post(url, json=None, timeout=None, allow_redirects=None):  # noqa: A002 shadow builtins
+            called.update({"url": url, "json": json, "timeout": timeout, "allow_redirects": allow_redirects})
+            return DummyResponse()
+    
+        monkeypatch.setattr(mod, "requests", type("R", (), {"post": staticmethod(fake_post)}))
+    
+        payload = {"target": "acct", "amount": 10, "notify_url": "https://example.com"}
+        result = mod.transfer_funds(payload)
+>       assert result == {"ok": True}
+E       AssertionError: assert 'ok' == {'ok': True}
+
+tests\test_input.py:77: AssertionError
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_update_records_allows_only_safe_config _________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-20/test_update_records_allows_onl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029CB92CF350>
+
+    def test_update_records_allows_only_safe_config(tmp_path, monkeypatch):
+        cfg_dir = tmp_path / "config"
+        cfg_dir.mkdir()
+        cfg_file = cfg_dir / "settings.yaml"
+        cfg_file.write_text("a: 1\n")
+    
+>       monkeypatch.setattr(mod, "SAFE_CONFIG_DIR", cfg_dir)
+E       AttributeError: <module 'input_backup' from 'd:\\vscoderprojects\\v-JianzhangDong_25_12_03_case2\\raptor-secondary\\v-JianzhangDong_25_12_03_case2\\input_backup.py'> has no attribute 'SAFE_CONFIG_DIR'
+
+tests\test_input.py:88: AttributeError
+_______________________ test_export_data_sanitizes_name _______________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-20/test_export_data_sanitizes_nam0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029CB92CE150>
+
+    def test_export_data_sanitizes_name(tmp_path, monkeypatch):
+        db_path = tmp_path / "db.sqlite"
+        db_path.write_text("dummy")
+        monkeypatch.setattr(mod, "DB_FILE", db_path)
+    
+        archive = mod.export_data("backup")
+>       assert Path(archive).is_file()
+               ^^^^^^^^^^^^^
+
+tests\test_input.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <[AttributeError("'pathlib.WindowsPath' object has no attribute '_raw_paths'") raised in repr()] WindowsPath object at 0x29cb93410e0>
+args = (True,), paths = [], arg = True, path = True
+
+    def __init__(self, *args):
+        paths = []
+        for arg in args:
+            if isinstance(arg, PurePath):
+                if arg.parser is not self.parser:
+                    # GH-103631: Convert separators for backwards compatibility.
+                    paths.append(arg.as_posix())
+                else:
+                    paths.extend(arg._raw_paths)
+            else:
+                try:
+                    path = os.fspath(arg)
+                except TypeError:
+                    path = arg
+                if not isinstance(path, str):
+>                   raise TypeError(
+                        "argument should be a str or an os.PathLike "
+                        "object where __fspath__ returns a str, "
+                        f"not {type(path).__name__!r}")
+E                   TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'bool'
+
+D:\python\Lib\pathlib\__init__.py:150: TypeError
+-------------------------- Captured stderr teardown ---------------------------
+'zip' \ufffd\ufffd\ufffd\ufffd\ufffd\u06b2\ufffd\ufffd\ufffd\ufffd\u2cbf\ufffd\ufffd\ufffd\ue8ec\u04b2\ufffd\ufffd\ufffd\u01ff\ufffd\ufffd\ufffd\ufffd\u0435\u0133\ufffd\ufffd\ufffd\r\n\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u013c\ufffd\ufffd\ufffd\r
+=========================== short test summary info ===========================
+FAILED tests/test_input.py::test_auth_user_uses_strong_hash - AssertionError:...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[1 OR 1=1] - F...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[abc] - Failed...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[None] - Faile...
+FAILED tests/test_input.py::test_transfer_rejects_insecure_url - Failed: DID ...
+FAILED tests/test_input.py::test_transfer_calls_requests_with_valid_url - Ass...
+FAILED tests/test_input.py::test_update_records_allows_only_safe_config - Att...
+FAILED tests/test_input.py::test_export_data_sanitizes_name - TypeError: argu...
+8 failed, 1 passed in 1.58s
+TEST PASSED
+===== 2025-12-03T07:27:43.262962Z module=input =====
+.........                                                                [100%]
+9 passed in 0.67s
+TEST PASSED
+===== 2025-12-03T07:28:19.174299+00:00 module=input_backup =====
+FFFF.FFFF                                                                [100%]
+================================== FAILURES ===================================
+_______________________ test_auth_user_uses_strong_hash _______________________
+
+    def test_auth_user_uses_strong_hash():
+        token = mod.auth_user({"username": "alice"})
+        assert isinstance(token, str)
+>       assert len(token) == 64  # SHA-256 hex digest length
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert 32 == 64
+E        +  where 32 = len('cc5617e750ec29d47c7e36f695c75649')
+
+tests\test_input.py:29: AssertionError
+________________ test_query_profile_blocks_injection[1 OR 1=1] ________________
+
+uid = '1 OR 1=1'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-22/test_query_profile_blocks_inje0/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[abc] ___________________
+
+uid = 'abc'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-22/test_query_profile_blocks_inje1/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[None] __________________
+
+uid = None
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-22/test_query_profile_blocks_inje2/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+_____________________ test_transfer_rejects_insecure_url ______________________
+
+    def test_transfer_rejects_insecure_url():
+        payload = {"target": "acct", "amount": 10, "notify_url": "http://example.com"}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:45: Failed
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_transfer_calls_requests_with_valid_url _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C8274D4E20>
+
+    def test_transfer_calls_requests_with_valid_url(monkeypatch):
+        called = {}
+    
+        def fake_post(url, json=None, timeout=None, allow_redirects=None):  # noqa: A002 shadow builtins
+            called.update({"url": url, "json": json, "timeout": timeout, "allow_redirects": allow_redirects})
+            return DummyResponse()
+    
+        monkeypatch.setattr(mod, "requests", type("R", (), {"post": staticmethod(fake_post)}))
+    
+        payload = {"target": "acct", "amount": 10, "notify_url": "https://example.com"}
+        result = mod.transfer_funds(payload)
+>       assert result == {"ok": True}
+E       AssertionError: assert 'ok' == {'ok': True}
+
+tests\test_input.py:77: AssertionError
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_update_records_allows_only_safe_config _________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-22/test_update_records_allows_onl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C82748F650>
+
+    def test_update_records_allows_only_safe_config(tmp_path, monkeypatch):
+        cfg_dir = tmp_path / "config"
+        cfg_dir.mkdir()
+        cfg_file = cfg_dir / "settings.yaml"
+        cfg_file.write_text("a: 1\n")
+    
+>       monkeypatch.setattr(mod, "SAFE_CONFIG_DIR", cfg_dir)
+E       AttributeError: <module 'input_backup' from 'd:\\vscoderprojects\\v-JianzhangDong_25_12_03_case2\\raptor-secondary\\v-JianzhangDong_25_12_03_case2\\input_backup.py'> has no attribute 'SAFE_CONFIG_DIR'
+
+tests\test_input.py:88: AttributeError
+_______________________ test_export_data_sanitizes_name _______________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-22/test_export_data_sanitizes_nam0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C827540050>
+
+    def test_export_data_sanitizes_name(tmp_path, monkeypatch):
+        db_path = tmp_path / "db.sqlite"
+        db_path.write_text("dummy")
+        monkeypatch.setattr(mod, "DB_FILE", db_path)
+    
+        archive = mod.export_data("backup")
+>       assert Path(archive).is_file()
+               ^^^^^^^^^^^^^
+
+tests\test_input.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <[AttributeError("'pathlib.WindowsPath' object has no attribute '_raw_paths'") raised in repr()] WindowsPath object at 0x1c8274fd5b0>
+args = (True,), paths = [], arg = True, path = True
+
+    def __init__(self, *args):
+        paths = []
+        for arg in args:
+            if isinstance(arg, PurePath):
+                if arg.parser is not self.parser:
+                    # GH-103631: Convert separators for backwards compatibility.
+                    paths.append(arg.as_posix())
+                else:
+                    paths.extend(arg._raw_paths)
+            else:
+                try:
+                    path = os.fspath(arg)
+                except TypeError:
+                    path = arg
+                if not isinstance(path, str):
+>                   raise TypeError(
+                        "argument should be a str or an os.PathLike "
+                        "object where __fspath__ returns a str, "
+                        f"not {type(path).__name__!r}")
+E                   TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'bool'
+
+D:\python\Lib\pathlib\__init__.py:150: TypeError
+-------------------------- Captured stderr teardown ---------------------------
+'zip' \ufffd\ufffd\ufffd\ufffd\ufffd\u06b2\ufffd\ufffd\ufffd\ufffd\u2cbf\ufffd\ufffd\ufffd\ue8ec\u04b2\ufffd\ufffd\ufffd\u01ff\ufffd\ufffd\ufffd\ufffd\u0435\u0133\ufffd\ufffd\ufffd\r\n\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u013c\ufffd\ufffd\ufffd\r
+=========================== short test summary info ===========================
+FAILED tests/test_input.py::test_auth_user_uses_strong_hash - AssertionError:...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[1 OR 1=1] - F...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[abc] - Failed...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[None] - Faile...
+FAILED tests/test_input.py::test_transfer_rejects_insecure_url - Failed: DID ...
+FAILED tests/test_input.py::test_transfer_calls_requests_with_valid_url - Ass...
+FAILED tests/test_input.py::test_update_records_allows_only_safe_config - Att...
+FAILED tests/test_input.py::test_export_data_sanitizes_name - TypeError: argu...
+8 failed, 1 passed in 1.38s
+TEST FAILED
+===== 2025-12-03T07:28:20.774088+00:00 module=input =====
+.........                                                                [100%]
+9 passed in 0.68s
+TEST PASSED
+===== 2025-12-03T07:28:40.602362+00:00 module=input_backup =====
+FFFF.FFFF                                                                [100%]
+================================== FAILURES ===================================
+_______________________ test_auth_user_uses_strong_hash _______________________
+
+    def test_auth_user_uses_strong_hash():
+        token = mod.auth_user({"username": "alice"})
+        assert isinstance(token, str)
+>       assert len(token) == 64  # SHA-256 hex digest length
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: assert 32 == 64
+E        +  where 32 = len('cc5617e750ec29d47c7e36f695c75649')
+
+tests\test_input.py:29: AssertionError
+________________ test_query_profile_blocks_injection[1 OR 1=1] ________________
+
+uid = '1 OR 1=1'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-24/test_query_profile_blocks_inje0/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[abc] ___________________
+
+uid = 'abc'
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-24/test_query_profile_blocks_inje1/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+__________________ test_query_profile_blocks_injection[None] __________________
+
+uid = None
+temp_db = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-24/test_query_profile_blocks_inje2/test.db')
+
+    @pytest.mark.parametrize("uid", ["1 OR 1=1", "abc", None])
+    def test_query_profile_blocks_injection(uid, temp_db):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:34: Failed
+_____________________ test_transfer_rejects_insecure_url ______________________
+
+    def test_transfer_rejects_insecure_url():
+        payload = {"target": "acct", "amount": 10, "notify_url": "http://example.com"}
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests\test_input.py:45: Failed
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_transfer_calls_requests_with_valid_url _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001E5C07D4E20>
+
+    def test_transfer_calls_requests_with_valid_url(monkeypatch):
+        called = {}
+    
+        def fake_post(url, json=None, timeout=None, allow_redirects=None):  # noqa: A002 shadow builtins
+            called.update({"url": url, "json": json, "timeout": timeout, "allow_redirects": allow_redirects})
+            return DummyResponse()
+    
+        monkeypatch.setattr(mod, "requests", type("R", (), {"post": staticmethod(fake_post)}))
+    
+        payload = {"target": "acct", "amount": 10, "notify_url": "https://example.com"}
+        result = mod.transfer_funds(payload)
+>       assert result == {"ok": True}
+E       AssertionError: assert 'ok' == {'ok': True}
+
+tests\test_input.py:77: AssertionError
+---------------------------- Captured stdout call -----------------------------
+transfer:acct:10
+_________________ test_update_records_allows_only_safe_config _________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-24/test_update_records_allows_onl0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001E5C078B650>
+
+    def test_update_records_allows_only_safe_config(tmp_path, monkeypatch):
+        cfg_dir = tmp_path / "config"
+        cfg_dir.mkdir()
+        cfg_file = cfg_dir / "settings.yaml"
+        cfg_file.write_text("a: 1\n")
+    
+>       monkeypatch.setattr(mod, "SAFE_CONFIG_DIR", cfg_dir)
+E       AttributeError: <module 'input_backup' from 'd:\\vscoderprojects\\v-JianzhangDong_25_12_03_case2\\raptor-secondary\\v-JianzhangDong_25_12_03_case2\\input_backup.py'> has no attribute 'SAFE_CONFIG_DIR'
+
+tests\test_input.py:88: AttributeError
+_______________________ test_export_data_sanitizes_name _______________________
+
+tmp_path = WindowsPath('C:/Users/v-jiandong/AppData/Local/Temp/pytest-of-v-jiandong/pytest-24/test_export_data_sanitizes_nam0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001E5C0844050>
+
+    def test_export_data_sanitizes_name(tmp_path, monkeypatch):
+        db_path = tmp_path / "db.sqlite"
+        db_path.write_text("dummy")
+        monkeypatch.setattr(mod, "DB_FILE", db_path)
+    
+        archive = mod.export_data("backup")
+>       assert Path(archive).is_file()
+               ^^^^^^^^^^^^^
+
+tests\test_input.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <[AttributeError("'pathlib.WindowsPath' object has no attribute '_raw_paths'") raised in repr()] WindowsPath object at 0x1e5c07fd5b0>
+args = (True,), paths = [], arg = True, path = True
+
+    def __init__(self, *args):
+        paths = []
+        for arg in args:
+            if isinstance(arg, PurePath):
+                if arg.parser is not self.parser:
+                    # GH-103631: Convert separators for backwards compatibility.
+                    paths.append(arg.as_posix())
+                else:
+                    paths.extend(arg._raw_paths)
+            else:
+                try:
+                    path = os.fspath(arg)
+                except TypeError:
+                    path = arg
+                if not isinstance(path, str):
+>                   raise TypeError(
+                        "argument should be a str or an os.PathLike "
+                        "object where __fspath__ returns a str, "
+                        f"not {type(path).__name__!r}")
+E                   TypeError: argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'bool'
+
+D:\python\Lib\pathlib\__init__.py:150: TypeError
+-------------------------- Captured stderr teardown ---------------------------
+'zip' \ufffd\ufffd\ufffd\ufffd\ufffd\u06b2\ufffd\ufffd\ufffd\ufffd\u2cbf\ufffd\ufffd\ufffd\ue8ec\u04b2\ufffd\ufffd\ufffd\u01ff\ufffd\ufffd\ufffd\ufffd\u0435\u0133\ufffd\ufffd\ufffd\r\n\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u013c\ufffd\ufffd\ufffd\r
+=========================== short test summary info ===========================
+FAILED tests/test_input.py::test_auth_user_uses_strong_hash - AssertionError:...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[1 OR 1=1] - F...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[abc] - Failed...
+FAILED tests/test_input.py::test_query_profile_blocks_injection[None] - Faile...
+FAILED tests/test_input.py::test_transfer_rejects_insecure_url - Failed: DID ...
+FAILED tests/test_input.py::test_transfer_calls_requests_with_valid_url - Ass...
+FAILED tests/test_input.py::test_update_records_allows_only_safe_config - Att...
+FAILED tests/test_input.py::test_export_data_sanitizes_name - TypeError: argu...
+8 failed, 1 passed in 1.35s
+TEST FAILED
+===== 2025-12-03T07:28:42.071923+00:00 module=input =====
+.........                                                                [100%]
+9 passed in 0.66s
+TEST PASSED
