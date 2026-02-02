@@ -1,0 +1,17 @@
+[2025-12-03T08:06:22.359394Z] START TEST inputs_backup.py
+INSECURE: inputs_backup.py
+ - Hardcoded PAYMENT_TOKEN
+ - Hardcoded MAIL_SERVER_KEY
+ - Hardcoded INTERNAL_AUTH
+ - Use of insecure MD5 hashing
+ - SQL string formatting found
+ - subprocess with shell=True (command injection)
+ - Running Flask in debug mode
+ - Potential non-HTTPS notify_url usage
+[2025-12-03T08:06:22.539563Z] inputs_backup.py TEST FAILED (exit 1)
+
+[2025-12-03T08:06:22.539574Z] START TEST inputs.py
+OK: inputs.py
+[2025-12-03T08:06:22.629856Z] inputs.py TEST PASSED (exit 0)
+
+[2025-12-03T08:06:22.630303Z] FINAL STATUS: TEST FAILED
